@@ -2,7 +2,7 @@
 # created by jimmy.pan
 
 export TOPDIR=$(shell pwd)/../../
-
+CC=gcc
 AR=ar cr
 
 ifndef PORT_TYPE
@@ -28,6 +28,8 @@ WD_OBJS_BUILD := $(patsubst %,%_build,$(WD_OBJS))
 WD_OBJS_CLEAN := $(patsubst %,%_clean,$(WD_OBJS))
 
 wdlib:$(WD_OBJS_BUILD)
+	@$(CC) $(CFLAGS) -shared -o  libwilddog.so $(wildcard $(TOPDIR)/lib/*.o) -fPIC
+	mv libwilddog.so $(TOPDIR)/lib
 	@$(AR) libwilddog.a $(TOPDIR)/lib/*.o; \
 	rm -rf $(TOPDIR)/lib/*.o; \
 	mv libwilddog.a $(TOPDIR)/lib;
@@ -55,7 +57,7 @@ test:
 	
 
 example:
-	@if test ! -e $(TOPDIR)/lib/libwilddog.a ;\
+#	@if test ! -e $(TOPDIR)/lib/libwilddog.a ;\
 	then \
 		make wdlib; \
 	fi
