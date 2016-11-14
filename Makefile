@@ -3,7 +3,8 @@ MAKE=make --no-print-directory
 
 ifeq ($(PORT_TYPE), )
 $(warning Do not assign a PORT_TYPE, use linux as default.)
-export PORT_TYPE:=linux
+#export PORT_TYPE:=linux
+export PORT_TYPE:=openwrt
 else
 $(warning PORT_TYPE is ${PORT_TYPE})
 endif
