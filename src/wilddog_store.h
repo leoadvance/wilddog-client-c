@@ -10,7 +10,7 @@ extern "C"
  
 #include "wilddog_conn.h"
 
-#define WILDDOG_AUTH_LEN 256
+#define WILDDOG_AUTH_LEN 500
 
 typedef enum WILDDOG_STORE_CMD_T
 {
