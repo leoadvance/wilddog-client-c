@@ -902,7 +902,19 @@ STATIC BOOL WD_SYSTEM _wilddog_cm_transmitTimeOut
     Wilddog_Cm_List_T *p_cm_l
     )
 {
-    if(DIFF(p_cm_n->d_registerTm,_wilddog_getTime())> WILDDOG_RETRANSMITE_TIME)
+	u32 timeout = WILDDOG_RETRANSMITE_TIME;
+/* 
+*  add by skyli,as customer requirement.
+*/
+#ifdef WILDDOG_SETTIMEOUT
+	if(p_cm_n->cmd == WILDDOG_CONN_CMD_SET)
+		timeout = WILDDOG_SETTIMEOUT;
+#endif
+/*
+* add by skyli 20161221
+*/
+
+    if(DIFF(p_cm_n->d_registerTm,_wilddog_getTime())> timeout)
     {
         Protocol_recvArg_T timeOutArg;
         memset(&timeOutArg,0,sizeof(Protocol_recvArg_T));

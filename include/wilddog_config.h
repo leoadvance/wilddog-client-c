@@ -47,6 +47,10 @@ extern "C"
 #define WILDDOG_RECEIVE_TIMEOUT 100
 #endif
 
+#ifndef WILDDOG_SETTIMEOUT
+#define WILDDOG_SETTIMEOUT	3000  
+#endif
+
 #ifdef __cplusplus
 }
 #endif
