@@ -913,7 +913,8 @@ STATIC BOOL WD_SYSTEM _wilddog_cm_transmitTimeOut
 /*
 * add by skyli 20161221
 */
-
+	//wilddog_debug("p_cm_n->d_registerTm = %ld  currtime = %ld,timeout = %ld",\
+	//	p_cm_n->d_registerTm,_wilddog_getTime(),timeout);
     if(DIFF(p_cm_n->d_registerTm,_wilddog_getTime())> timeout)
     {
         Protocol_recvArg_T timeOutArg;
@@ -925,6 +926,7 @@ STATIC BOOL WD_SYSTEM _wilddog_cm_transmitTimeOut
     
     return FALSE;
 }
+
 /*
  * Function:    _wilddog_cm_retransmit.
  * Description:  retransmit user request.
@@ -948,30 +950,29 @@ STATIC Wilddog_Return_T WD_SYSTEM _wilddog_cm_retransmit
         /*successfully observer node not need to retransmit.*/
         if(_wilddog_cm_ndoe_isNotify(curr) == TRUE)
             continue;
-
         /* send out while touch send time.*/
-        if( currTm >curr->d_sendTm && \
-            DIFF(currTm,curr->d_sendTm) < (0xffff))
+			/* time out node will be dele and not need to retransmit.*/
+        if(_wilddog_cm_transmitTimeOut(curr,p_cm_l) == FALSE)
         {
-            /* time out node will be dele and not need to retransmit.*/
-            if(_wilddog_cm_transmitTimeOut(curr,p_cm_l) == FALSE)
-            {
-                if(curr->cmd == WILDDOG_CONN_CMD_AUTH)
-                {
-                    /*auth send.*/
-
-                    _wilddog_protocol_ioctl(_PROTOCOL_CMD_SEND,curr->p_pkg,0);
-                    _wilddog_cm_node_updataSendTime(p_cm_l, \
-                        curr, \
-                        _CM_NEXTSENDTIME_SET(_wilddog_getTime(), \
-                        curr->d_retransmit_cnt));
-                }
-                else
-                {
-                    _wilddog_cm_onlineSend(p_cm_l,curr);
-                    /* put to queue tial.*/
-                }
-            }
+            /* send out while touch send time.*/
+			//wilddog_debug("currTm >curr->d_sendTm %ld currTm = %ld",curr->d_sendTm,currTm);
+	        if( currTm >curr->d_sendTm && \
+	            DIFF(currTm,curr->d_sendTm) < (0xffff)){
+	                if(curr->cmd == WILDDOG_CONN_CMD_AUTH)
+	                {
+	                    /*auth send.*/
+	                    _wilddog_protocol_ioctl(_PROTOCOL_CMD_SEND,curr->p_pkg,0);
+	                    _wilddog_cm_node_updataSendTime(p_cm_l, \
+	                        curr, \
+	                        _CM_NEXTSENDTIME_SET(_wilddog_getTime(), \
+	                        curr->d_retransmit_cnt));
+	                }
+	                else
+	                {
+	                    _wilddog_cm_onlineSend(p_cm_l,curr);
+	                    /* put to queue tial.*/
+	                }
+	            }
 
         }
     }
